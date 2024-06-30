@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+       .container {
+            max-width: 300px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Registration Form</h1>
+        <form id="registration-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username"><br><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email"><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password"><br><br>
+            <label for="confirm-password">Confirm Password:</label>
+            <input type="password" id="confirm-password" name="confirm-password"><br><br>
+            <input type="submit" value="Register">
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('registration-form');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password, confirmPassword })
+            })
+           .then((res) => res.json())
+           .then((data) => console.log(data))
+           .catch((err) => console.error(err));
+        });
+    </script>
+
+    <script>
+        
+        const express = require('express');
+        const bodyParser = require('body-parser');
+        const mongoose = require('mongoose');
+
+        const app = express();
+
+        app.use(bodyParser.json());
+        app.use(bodyParser.urlencoded({ extended: true }));
+
+        mongoose.connect('mongodb://localhost:27017/mydatabase', { useNewUrlParser: true, useUnifiedTopology: true });
+
+        const userSchema = new mongoose.Schema({
+            username: String,
+            email: String,
+            password: String
+        });
+
+        const User = mongoose.model('User', userSchema);
+
+        app.post('/register', (req, res) => {
+            const { username, email, password, confirmPassword } = req.body;
+
+            if (password!== confirmPassword) {
+                return res.status(400).send({ message: 'Passwords do not match' });
+            }
+
+            const user = new User({ username, email, password });
+            user.save((err, user) => {
+                if (err) {
+                    return res.status(500).send({ message: 'Error registering user' });
+                }
+                res.send({ message: 'User registered successfully' });
+            });
+        });
+
+        app.listen(3000, () => {
+            console.log('Server started on port 3000');
+        });
+        */
+    </script>
+</body>
+</html>
